@@ -134,7 +134,7 @@ def main(stdscr, filetype, chapters, chapter, linecounter=0):
 
         return document
 
-    global slow_print, print_speed
+    global filename, slow_print, print_speed
     document = get_document()
     rows, cols = stdscr.getmaxyx()
     stdscr.clear()
@@ -142,10 +142,13 @@ def main(stdscr, filetype, chapters, chapter, linecounter=0):
     lines = document.get_lines()
     out = wrap(lines[linecounter], int(cols/3))
     cursor = 0
+    stdscr.addstr(1, (cols-len(filename))//2, filename)
     stdscr.addstr(rows-2, 0, document.get_progress())
 
     if slow_print:
         import time
+        stdscr.addstr(2, 0, "Slow printing enabled")
+
         for i in out:
             sentence = ""
             words = i.split(" ")
@@ -155,7 +158,6 @@ def main(stdscr, filetype, chapters, chapter, linecounter=0):
                 stdscr.addstr(int(rows/2)-int(len(out)/2)+cursor,
                               int(cols/3), sentence)
                 time.sleep(print_speed)
-                stdscr.addstr(1, 1, str(print_speed))
 
             cursor += 1
     else:
@@ -310,7 +312,6 @@ if __name__ == "__main__":
 
     filename = args.file
     filetype = filename.split(".")[1]
-    global slow_print, printing_speed
     slow_print = False
     print_speed = 0.1
 
